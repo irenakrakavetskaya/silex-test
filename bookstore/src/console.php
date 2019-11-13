@@ -15,6 +15,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner as DoctrineORM;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Symfony\Component\Console\Helper\HelperSet;
+use Doctrine\ORM\Configuration;
 
 /*$console = new Application('My Silex Application', 'n/a');
 $console->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
@@ -44,6 +45,9 @@ $app->register(
     ]
 );
 
+
+
+
 $app
     ->register(new DoctrineServiceProvider(), [
     'db.options' => [
@@ -67,7 +71,7 @@ $app
                 [
                     'type' => 'annotation',
                     'namespace' => 'Entity',
-                    'path' => __DIR__ . '/Entity',
+                    'path' => __DIR__ . '/App/Entity',
                     'use_simple_annotation_reader' => false,
                 ],
             ],
@@ -78,11 +82,39 @@ $app
 
 $app->boot();
 
+
 $helperSet = $console->getHelperSet();
 $helperSet->set($helperSet->get('connection'), 'db');
 
 DoctrineDBAL::addCommands($console);
 DoctrineORM::addCommands($console);
+
+
+
+/*$newDefaultAnnotationDrivers = array(
+    __DIR__."/src/App",
+);
+$config = new \Doctrine\ORM\Configuration();
+//$config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache);
+$driverImpl = $config->newDefaultAnnotationDriver($newDefaultAnnotationDrivers);
+$config->setMetadataDriverImpl($driverImpl);
+$config->setProxyDir($app['orm.proxies_dir']);
+$config->setProxyNamespace('Proxies');
+$em = \Doctrine\ORM\EntityManager::create($app['db.options'], $config);
+$helpers = new Symfony\Component\Console\Helper\HelperSet(array(
+    'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
+    'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($em),
+));
+
+$helperSet = new \Symfony\Component\Console\Helper\HelperSet([
+    'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($app['db']),
+    'dialog' => new \Symfony\Component\Console\Helper\QuestionHelper(),
+    'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($app['orm.em'])//db.
+]);*
+
+$console->setHelperSet($helpers);//helperSet*/
+
+
 
 //$console->run();
 
