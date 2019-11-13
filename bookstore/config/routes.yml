@@ -1,0 +1,3 @@
+index:
+   path: /api/books/1
+   controller: src\App\Controller\BookController::readAction

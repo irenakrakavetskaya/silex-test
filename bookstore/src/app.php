@@ -2,7 +2,8 @@
 
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-use Silex\Application;
+//use Silex\Application;
+use App\Application;
 use Silex\Provider\AssetServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
@@ -11,6 +12,8 @@ use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
 use Doctrine\Common\Cache\FilesystemCache;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Silex\Provider\RoutingServiceProvider;
+use Bezhanov\Silex\Routing\RouteAnnotationsProvider;
 
 
 AnnotationRegistry::registerLoader([$loader, 'loadClass']);
@@ -26,15 +29,26 @@ $app = new Application([
 //skeleton
 //$app = new Application();
 $app->register(new ServiceControllerServiceProvider());
-$app->register(new AssetServiceProvider());
-$app->register(new TwigServiceProvider());
+$app->register(new AssetServiceProvider());//necessary
+$app->register(new TwigServiceProvider());//necessary
 $app->register(new HttpFragmentServiceProvider());
-$app['twig'] = $app->extend('twig', function ($twig, $app) {
+/*$app['twig'] = $app->extend('twig', function ($twig, $app) {
     // add custom globals, filters, tags, ...
 
     return $twig;
-});
+});*/
 
+$app->register(new RoutingServiceProvider());
+
+
+
+//test request - works
+/*$app->get('/books/1', function () { //books/1
+    return 'welcome to the homepage';
+});*/
+
+//$x = new RouteAnnotationsProvider();
+//var_dump($x);
 
 //my
 /*$app->register(new DoctrineServiceProvider());

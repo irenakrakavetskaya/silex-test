@@ -7,21 +7,25 @@ namespace App;
 //use App\Controller\LoginController;
 //use App\Controller\ManufacturerController;
 //use App\Controller\ProfileController;
-//use App\ServiceProvider\JwtServiceProvider;
-//use App\ServiceProvider\SerializerServiceProvider;
+//use App\ServiceProvider\JwtServiceProvider;//
+//use App\ServiceProvider\SerializerServiceProvider;//
 //use Bezhanov\Silex\Routing\RouteAnnotationsProvider;
 use Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use Doctrine\Common\Annotations\AnnotationReader;
 //use JDesrosiers\Silex\Provider\CorsServiceProvider;
-//use Pimple\Container;
+use Pimple\Container;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
-//use Symfony\Component\Cache\Adapter\DoctrineAdapter;
+use Symfony\Component\Cache\Adapter\DoctrineAdapter;
 //use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Validator\Mapping\Cache\DoctrineCache;
 use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\Routing\RouteCollection;
+
 
 class Application extends \Silex\Application
 {
@@ -34,8 +38,10 @@ class Application extends \Silex\Application
         }
 
         //$this->registerEnvironmentVariables();
+
         $this->registerServiceProviders();
         $this->registerControllers();
+
     }
 
     /*private function registerEnvironmentVariables()
@@ -59,7 +65,7 @@ class Application extends \Silex\Application
         $app = $this;
 
         $app
-            /*->register(new DoctrineServiceProvider(), [
+            ->register(new DoctrineServiceProvider(), [
             'db.options' => [
                 'driver'    => 'pdo_pgsql',
                 'host'      => 'postgres',
@@ -86,7 +92,7 @@ class Application extends \Silex\Application
                         ],
                     ],
                 ],
-            ])*/
+            ])
             ->register(new ServiceControllerServiceProvider())
             ->register(new ValidatorServiceProvider(), [
                 'validator.mapping.class_metadata_factory' => function ($app) {
@@ -95,40 +101,46 @@ class Application extends \Silex\Application
                     return new LazyLoadingMetadataFactory($loader, $cacheDriver);
                 },
             ])
-            /*->register(new RouteAnnotationsProvider(), [
-                'routing.cache_adapter' => function ($app) {
-                    return new DoctrineAdapter($app['cache']);
-                },
-                'routing.controller_dir' => __DIR__ . '/Controller',
-            ])
-            ->register(new SerializerServiceProvider(), [
-                'serializer.cache_dir' => $app['cache']->getDirectory()
-            ])*/
+
+            //->register(new RouteAnnotationsProvider(), [ //need for cont but bug
+               //'routing.cache_adapter' => function ($app) {
+                  // return new DoctrineAdapter($app['cache']);
+               //},
+                //'routing.controller_dir' => __DIR__ . '/Controller',
+            //])
+            //->register(new SerializerServiceProvider(), [ //bug
+                //'serializer.cache_dir' => $app['cache']->getDirectory()
+            //])
             /*->register(new CorsServiceProvider(), [
                 'cors.allowOrigin' => $app['api_client_url']
             ])*/
-            //->register(new JwtServiceProvider())
+            //->register(new JwtServiceProvider())//
         ;
+
+
+
+
     }
+
 
     private function registerControllers()
     {
-        /*$app = $this;
+        $app = $this;
 
         $resourceControllers = [
-            'app.controller.diary_controller' => DiaryController::class,
-            'app.controller.food_controller' => FoodController::class,
-            'app.controller.manufacturer_controller' => ManufacturerController::class,
-            'app.controller.profile_controller' => ProfileController::class,
+            'app.controller.book_controller' => BookController::class,
+            //'app.controller.food_controller' => FoodController::class,
+            //'app.controller.manufacturer_controller' => ManufacturerController::class,
+            //'app.controller.profile_controller' => ProfileController::class,
         ];
 
         foreach ($resourceControllers as $serviceId => $className) {
             $app[$serviceId] = function ($app) use ($className) {
                 return new $className($app['orm.em'], $app['serializer'], $app['validator']);
-            };
+            };git
         }
 
-        $app->extend('app.controller.profile_controller', function (ProfileController $profileController, Container $app) {
+        /*$app->extend('app.controller.profile_controller', function (ProfileController $profileController, Container $app) {
             $profileController->setJwtParser($app['jwt.parser']);
             return $profileController;
         });
@@ -136,5 +148,7 @@ class Application extends \Silex\Application
         $app['app.controller.login_controller'] = function ($app) {
             return new LoginController($app['orm.em'], $app['jwt.service']);
         };*/
+
+
     }
 }
